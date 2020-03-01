@@ -17,11 +17,16 @@ appleImg.src = "img/apple.png";
 const box: number = 32;
 var score: number = 0;
 
-// Initialize apple instance
-let apple: FieldPosition = {
-    x: Math.floor((Math.random() * 17 + 1)) * box,
-    y: Math.floor((Math.random() * 15 + 3)) * box
+// Get random position in the field
+function getNewPosition(): FieldPosition {
+    return {
+        x: Math.floor((Math.random() * 17 + 1)) * box,
+        y: Math.floor((Math.random() * 15 + 3)) * box
+    }
 }
+
+// Initialize apple instance
+let apple: FieldPosition = getNewPosition();
 
 // Initialize snake instance
 let snake = Array<FieldPosition>();
@@ -73,13 +78,26 @@ function drawGame(): void {
             y: snake[0].y
         }
 
-        snake.pop();
+        // Check if snake eats apple
+        if (snakeLastPosition.x == apple.x && snakeLastPosition.y == apple.y) {
+            apple = getNewPosition();
+        } else {
+            // delete the last snake segment
+            snake.pop();
+        }
 
         if (direction == 'left') snakeLastPosition.x -= box;
         if (direction == 'right') snakeLastPosition.x += box;
         if (direction == 'up') snakeLastPosition.y -= box;
         if (direction == 'down') snakeLastPosition.y += box;
 
+        let snakeNewHead: FieldPosition = {
+            x: snakeLastPosition.x,
+            y: snakeLastPosition.y
+        }
+
+        // add (move) new snake segment to the field
+        snake.unshift(snakeNewHead);
     }
 }
 
